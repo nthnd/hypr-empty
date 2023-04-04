@@ -19,3 +19,4 @@ args = ["-S", "drun"]
 command = "name_of_program"
 args = ["arg1", "arg2"]
 ```
+3) Add `hypr-empty` to your startup apps

@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
-use std::{io::Read, process::Command, fs::File};
 use anyhow::Result;
+use serde::Deserialize;
+use std::{fs::File, io::Read, process::Command};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 struct Cmd {
     command: String,
     args: Option<Vec<String>>,
@@ -18,8 +18,7 @@ fn main() -> Result<()> {
     let mut event_listener = EventListener::new();
 
     let home_dir = std::env::var("HOME")?;
-    let mut config_file =
-        File::open(format!("{home_dir}/.config/hypr-empty/config.toml"))?;
+    let mut config_file = File::open(format!("{home_dir}/.config/hypr-empty/config.toml"))?;
 
     let mut config = String::new();
     config_file.read_to_string(&mut config)?;
@@ -30,7 +29,7 @@ fn main() -> Result<()> {
         if let WorkspaceType::Regular(_ws) = &state.active_workspace {
             if Workspace::get_active().unwrap().windows == 0 {
                 Command::new(&cmd.command)
-                    .args((&cmd.args).clone().as_deref().unwrap_or_default())
+                    .args(cmd.args.clone().as_deref().unwrap_or_default())
                     .spawn()
                     .unwrap();
             }
