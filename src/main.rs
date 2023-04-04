@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::{io::Read, process::Command};
+use std::{io::Read, process::Command, fs::File};
+use anyhow::Result;
 
 #[derive(Serialize, Deserialize)]
 struct Cmd {
@@ -13,17 +14,17 @@ use hyprland::{
     shared::{HyprDataActive, WorkspaceType},
 };
 
-fn main() -> hyprland::Result<()> {
+fn main() -> Result<()> {
     let mut event_listener = EventListener::new();
 
-    let home_dir = std::env::var("HOME").unwrap();
+    let home_dir = std::env::var("HOME")?;
     let mut config_file =
-        std::fs::File::open(format!("{home_dir}/.config/hypr-empty/config.toml")).unwrap();
+        File::open(format!("{home_dir}/.config/hypr-empty/config.toml"))?;
 
     let mut config = String::new();
-    config_file.read_to_string(&mut config).unwrap();
+    config_file.read_to_string(&mut config)?;
 
-    let cmd: Cmd = toml::from_str(&config).unwrap();
+    let cmd: Cmd = toml::from_str(&config)?;
 
     event_listener.add_workspace_change_handler(move |_id, state| {
         if let WorkspaceType::Regular(_ws) = &state.active_workspace {
@@ -36,5 +37,6 @@ fn main() -> hyprland::Result<()> {
         }
     });
 
-    event_listener.start_listener()
+    event_listener.start_listener()?;
+    Ok(())
 }
