@@ -16,11 +16,15 @@ cargo install --git=https://github.com/nate-sys/hypr-empty
 2) Specify the command you want to be run 
 ```toml
 # If you're using wofi
-commmand = "wofi"
+command = "wofi"
 args = ["-S", "drun"]
+
+# If you're using rofi
+command = "rofi"
+args = ["-show", "drun"]
 
 # arbitrary program
 command = "name_of_program"
 args = ["arg1", "arg2"]
 ```
-3) Add `hypr-empty` to your startup apps
+3) Add `hypr-empty` to your startup apps and make sure that `.cargo/bin` is in your path
