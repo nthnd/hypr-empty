@@ -5,7 +5,7 @@ use std::{fs::File, io::Read, process::Command};
 
 #[derive(Deserialize)]
 struct Cmd {
-    workspace: String,
+    workspaces: Vec<String>,
     command: String,
     args: Option<Vec<String>>,
 }
@@ -35,7 +35,7 @@ fn main() -> Result<()> {
             let mut cmds = cmds
                 .components
                 .iter()
-                .filter(|&cmd| *cmd.workspace == id.to_string());
+                .filter(|&cmd| cmd.workspaces.contains(&id.to_string()));
             if let Some(cmd) = &cmds.next() {
                 if Workspace::get_active().unwrap().windows == 0 {
                     Command::new(&cmd.command)
